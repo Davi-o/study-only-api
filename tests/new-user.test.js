@@ -12,6 +12,20 @@ describe('User', () => {
             password : "just_a_simplestring_123",
         });
         expect(response.body).toHaveProperty("id");
+    })
+});
+
+describe('User', () => {
+    it('should throw an error when posting invalid data', async () => {
+        const response = await request(app).
+        post('/new-user').
+        send({
+            name : "",
+            mail : "",
+            phone_number : "",
+            password : "",
+        });
+        expect(response.status).toBe(400);
 
     })
-})
+});

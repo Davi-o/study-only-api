@@ -1,5 +1,6 @@
 const connection = require('../database/connection');
 const encryptor = require('../util/encryption/encrypt');
+const {checkForEmptyMandatoryField} = require('../util/validation/validator');
 
 module.exports = {
     async registerNewUser(request, response) {
@@ -13,14 +14,19 @@ module.exports = {
             hashedPassword
         ];
 
-        connection.query(sql, userData,
-            (error, result) => {
-                if (! error) {
-                    return response.json({id: result.insertId});
-                }
+        try {
+            checkForEmptyMandatoryField(userData);
 
-                return response.send(error);
-            }
-        );
-    }
+            connection.query(sql, userData,
+                (error, result) => {
+                    if (! error) {
+                        return response.json({id: result.insertId});
+                    }
+                    throw new error;
+                }
+            );
+        } catch (exception) {
+            return response.status(400).json({error: exception});
+        }
+    },
 }
