@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
     host: 'localhost',
     port: '3300',
     user: 'root',
@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
     database: 'rpg_api',
 });
 
-connection.connect(error => {
+connection.getConnection(error => {
     if (error) {
         throw error;
     }
