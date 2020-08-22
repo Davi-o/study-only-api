@@ -5,7 +5,7 @@ module.exports = {
     async registerNewUser(request, response) {
         const sql = "insert into users(id, name, phone_number, password) values (null, ?, ?, ?)";
         const hashedPassword = await encryptor.encryptPassword(request.body.password);
-        console.log(hashedPassword)
+
         const userData = [
             request.body.name,
             request.body.phone_number,
