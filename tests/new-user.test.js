@@ -6,9 +6,11 @@ describe('User', () => {
         const response = await request(app).
         post('/new-user').
         send({
-            example : 'test'
+            name : "user senderson2",
+            phone_number : "777-666-555",
+            password : "just_a_simplestring_12345",
         });
-        expect(response.body).toHaveProperty('id');
+        expect(response.body).toHaveProperty("id");
 
     })
 })
