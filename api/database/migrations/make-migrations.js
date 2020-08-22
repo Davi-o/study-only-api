@@ -1,5 +1,5 @@
-const userTable = require('./migrations/create-user-table');
-const connection = require('./connection');
+const userTable = require('./create-user-table');
+const connection = require('../connection');
 
 userTable.dropTable(connection).catch(error => {
     throw error;
