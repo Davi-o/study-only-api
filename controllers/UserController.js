@@ -3,11 +3,12 @@ const encryptor = require('../util/encryption/encrypt');
 
 module.exports = {
     async registerNewUser(request, response) {
-        const sql = "insert into users(id, name, phone_number, password) values (null, ?, ?, ?)";
+        const sql = "insert into users(id, name, mail, phone_number, password) values (null, ?, ?, ?, ?)";
         const hashedPassword = await encryptor.encryptPassword(request.body.password);
 
         const userData = [
             request.body.name,
+            request.body.mail,
             request.body.phone_number,
             hashedPassword
         ];
@@ -17,7 +18,7 @@ module.exports = {
                 if (! error) {
                     return response.json({id: result.insertId});
                 }
-                connection.end();
+
                 return response.send(error);
             }
         );
