@@ -1,32 +1,29 @@
-const connection = require('../database/connection');
 const encryptor = require('../util/encryption/encrypt');
+const UserModel = require('../models/UserModel')
 const {checkForEmptyMandatoryField} = require('../util/validation/validator');
 
 module.exports = {
     async registerNewUser(request, response) {
-        const sql = "insert into users(id, name, mail, phone_number, password) values (null, ?, ?, ?, ?)";
-        const hashedPassword = await encryptor.encryptPassword(request.body.password);
-
-        const userData = [
-            request.body.name,
-            request.body.mail,
-            request.body.phone_number,
-            hashedPassword
-        ];
-
         try {
-            checkForEmptyMandatoryField(userData);
+            await this.validateRequest(request);
 
-            connection.query(sql, userData,
-                (error, result) => {
-                    if (! error) {
-                        return response.json({id: result.insertId});
-                    }
-                    throw new error;
-                }
+            const user = new UserModel(
+                null,
+                request.body.name,
+                request.body.mail,
+                request.body.phone_number,
+                request.body.password
             );
+
+            user.insertUser();
+
+            return response.json({id: user.getId()});
         } catch (exception) {
             return response.status(400).json({error: exception});
         }
     },
+    async validateRequest(request) {
+        checkForEmptyMandatoryField(Object.values(request));
+        request.body.password = await encryptor.encryptPassword(request.body.password);
+    }
 }
